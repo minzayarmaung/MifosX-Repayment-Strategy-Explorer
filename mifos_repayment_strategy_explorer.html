@@ -1,0 +1,383 @@
+
+<h2 class="sr-only">MifosX Repayment Strategy Explorer — interactive payment allocation calculator for all 7 strategies</h2>
+<style>
+.strat-btn{width:100%;text-align:left;padding:8px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;font-size:12px;line-height:1.3;transition:all .15s}
+.strat-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.strat-btn.active{border-width:1.5px;color:var(--color-text-primary);font-weight:500}
+.comp-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap}
+.arrow-sep{font-size:16px;color:var(--color-text-tertiary);margin:0 2px}
+.info-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tag{padding:2px 8px;border-radius:4px;font-size:11px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+.seg-label{font-size:11px;text-align:center;margin-top:4px}
+.alloc-bar-wrap{display:flex;height:32px;border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.alloc-seg{height:100%;transition:width .3s ease;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;overflow:hidden;white-space:nowrap}
+.prop-note{font-size:11px;color:var(--color-text-tertiary);margin-top:4px;font-style:italic}
+
+.pen-pill{background:#FCEBEB;color:#791F1F} .fee-pill{background:#FAEEDA;color:#633806}
+.int-pill{background:#EEEDFE;color:#3C3489} .pri-pill{background:#E1F5EE;color:#085041}
+.pen-seg{background:#E24B4A;color:#fff} .fee-seg{background:#BA7517;color:#fff}
+.int-seg{background:#534AB7;color:#fff} .pri-seg{background:#1D9E75;color:#fff}
+.pen-bar{background:#FCEBEB;color:#791F1F} .fee-bar{background:#FAEEDA;color:#633806}
+.int-bar{background:#EEEDFE;color:#3C3489} .pri-bar{background:#E1F5EE;color:#085041}
+
+@media (prefers-color-scheme:dark){
+  .pen-pill{background:#501313;color:#F7C1C1} .fee-pill{background:#412402;color:#FAC775}
+  .int-pill{background:#26215C;color:#CECBF6} .pri-pill{background:#04342C;color:#9FE1CB}
+  .pen-seg{background:#A32D2D} .fee-seg{background:#854F0B}
+  .int-seg{background:#534AB7} .pri-seg{background:#0F6E56}
+  .pen-bar{background:#501313;color:#F7C1C1} .fee-bar{background:#412402;color:#FAC775}
+  .int-bar{background:#26215C;color:#CECBF6} .pri-bar{background:#04342C;color:#9FE1CB}
+}
+</style>
+
+<div style="display:flex;gap:12px;padding:0.75rem 0">
+  <!-- Left: strategy list -->
+  <div style="width:176px;flex-shrink:0;display:flex;flex-direction:column;gap:4px">
+    <div style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">7 Strategies</div>
+    <button class="strat-btn active" data-id="pfip" onclick="selectStrategy('pfip')">
+      <span style="font-weight:500;color:var(--color-text-primary)">① Default PFIP</span><br>
+      <span>Penalties first</span>
+    </button>
+    <button class="strat-btn" data-id="heavens" onclick="selectStrategy('heavens')">
+      <span style="font-weight:500;color:var(--color-text-primary)">② HeavensFamily</span><br>
+      <span>Proportional split</span>
+    </button>
+    <button class="strat-btn" data-id="creocore" onclick="selectStrategy('creocore')">
+      <span style="font-weight:500;color:var(--color-text-primary)">③ Creocore</span><br>
+      <span>Interest before fees</span>
+    </button>
+    <button class="strat-btn" data-id="overdue" onclick="selectStrategy('overdue')">
+      <span style="font-weight:500;color:var(--color-text-primary)">④ Overdue First</span><br>
+      <span>Clear arrears first</span>
+    </button>
+    <button class="strat-btn" data-id="pipf" onclick="selectStrategy('pipf')">
+      <span style="font-weight:500;color:var(--color-text-primary)">⑤ PIPF</span><br>
+      <span>Principal first</span>
+    </button>
+    <button class="strat-btn" data-id="ippf" onclick="selectStrategy('ippf')">
+      <span style="font-weight:500;color:var(--color-text-primary)">⑥ IPPF</span><br>
+      <span>Interest first</span>
+    </button>
+    <button class="strat-btn" data-id="early" onclick="selectStrategy('early')">
+      <span style="font-weight:500;color:var(--color-text-primary)">⑦ Early Payment</span><br>
+      <span>Recalc interest</span>
+    </button>
+    <div style="margin-top:8px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-size:11px;color:var(--color-text-tertiary)">
+      DB field:<br><code style="font-size:10px">loan_transaction_strategy_id</code>
+    </div>
+  </div>
+
+  <!-- Right: detail panel -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px">
+
+    <!-- Strategy header -->
+    <div id="strat-header" style="padding:12px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <div>
+          <div id="strat-name" style="font-size:15px;font-weight:500;color:var(--color-text-primary)"></div>
+          <div id="strat-code" style="font-size:11px;color:var(--color-text-tertiary);margin-top:2px;font-family:var(--font-mono)"></div>
+        </div>
+        <span id="strat-type" class="tag"></span>
+      </div>
+      <div id="strat-desc" style="font-size:13px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:8px"></div>
+      <div style="font-size:11px;color:var(--color-text-tertiary)">Use case: <span id="strat-use" style="color:var(--color-text-secondary)"></span></div>
+    </div>
+
+    <!-- Allocation order -->
+    <div style="padding:12px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary)">
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Payment allocation order</div>
+      <div id="alloc-order" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px"></div>
+      <div id="alloc-note" class="prop-note" style="margin-top:8px"></div>
+    </div>
+
+    <!-- Live Calculator -->
+    <div style="padding:12px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary)">
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Live payment calculator</div>
+
+      <!-- Outstanding balances -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:80px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center">
+          <div style="font-size:10px;color:var(--color-text-tertiary)">Penalties</div>
+          <div style="font-size:16px;font-weight:500;color:#E24B4A">$30</div>
+        </div>
+        <div style="flex:1;min-width:80px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center">
+          <div style="font-size:10px;color:var(--color-text-tertiary)">Fees</div>
+          <div style="font-size:16px;font-weight:500;color:#BA7517">$50</div>
+        </div>
+        <div style="flex:1;min-width:80px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center">
+          <div style="font-size:10px;color:var(--color-text-tertiary)">Interest</div>
+          <div style="font-size:16px;font-weight:500;color:#534AB7">$100</div>
+        </div>
+        <div style="flex:1;min-width:80px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center">
+          <div style="font-size:10px;color:var(--color-text-tertiary)">Principal</div>
+          <div style="font-size:16px;font-weight:500;color:#1D9E75">$500</div>
+        </div>
+        <div style="flex:1;min-width:80px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center">
+          <div style="font-size:10px;color:var(--color-text-tertiary)">Total Due</div>
+          <div style="font-size:16px;font-weight:500;color:var(--color-text-primary)">$680</div>
+        </div>
+      </div>
+
+      <!-- Slider -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:12px;color:var(--color-text-secondary);white-space:nowrap">Payment</span>
+        <input type="range" id="pay-slider" min="0" max="680" value="350" step="5" oninput="updateCalc()" style="flex:1">
+        <span style="font-size:14px;font-weight:500;color:var(--color-text-primary);min-width:42px;text-align:right" id="pay-amount">$350</span>
+      </div>
+
+      <!-- Stacked allocation bar -->
+      <div class="alloc-bar-wrap" id="alloc-bar"></div>
+
+      <!-- Segment labels -->
+      <div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap" id="alloc-labels"></div>
+    </div>
+
+    <!-- DB/API Info -->
+    <div style="padding:10px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);font-size:12px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div><span style="color:var(--color-text-tertiary)">Java class: </span><code id="java-class" style="font-size:11px;color:var(--color-text-secondary)"></code></div>
+        <div><span style="color:var(--color-text-tertiary)">Table: </span><code style="font-size:11px;color:var(--color-text-secondary)">ref_loan_transaction_processing_strategy</code></div>
+        <div><span style="color:var(--color-text-tertiary)">API param: </span><code style="font-size:11px;color:var(--color-text-secondary)">transactionProcessingStrategyId</code></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const BALANCES = {penalties:30, fees:50, interest:100, principal:500};
+const TOTAL = 680;
+
+const STRATEGIES = {
+  pfip:{
+    name:'Penalties, Fees, Interest, Principal (Default)',
+    code:'mifos-standard-strategy',
+    type:'Sequential',
+    desc:'The standard MifosX default. Clears penalty charges first, then fees, then interest, and finally reduces principal. Protects the lender\'s charge income before touching outstanding principal.',
+    use:'Standard MFI loans, group lending, general consumer lending',
+    order:['penalties','fees','interest','principal'],
+    allocType:'sequential',
+    note:'',
+    javaClass:'DuePenChrgBeforeInterestAndPrincipal',
+    accentColor:'#534AB7'
+  },
+  heavens:{
+    name:'HeavensFamily Unique Strategy',
+    code:'heavensfamily-strategy',
+    type:'Proportional',
+    desc:'After clearing penalties and fees, remaining payment is split PROPORTIONALLY between interest and principal based on their outstanding balance ratios. For overdue installments, interest is paid before principal.',
+    use:'NGO / social lenders wanting balanced debt reduction for borrowers',
+    order:['penalties','fees','interest + principal (proportional)'],
+    allocType:'proportional',
+    note:'Proportional split: if outstanding interest=$100 and principal=$500 (ratio 1:5), a $120 remaining payment allocates $20 to interest and $100 to principal.',
+    javaClass:'HeavensFamilyLoanRepaymentScheduleTransactionProcessor',
+    accentColor:'#0F6E56'
+  },
+  creocore:{
+    name:'Creocore Unique Strategy',
+    code:'creocore-strategy',
+    type:'Sequential',
+    desc:'Revenue-first approach. Interest is collected before principal reduction. Fees and penalties come LAST — the opposite of the default. Designed for commercial lenders prioritizing interest income recognition.',
+    use:'Commercial MFIs where interest revenue recognition and NII are critical',
+    order:['interest','principal','fees','penalties'],
+    allocType:'sequential',
+    note:'Overdue handling: overdue interest → overdue principal → current interest → current principal → fees → penalties.',
+    javaClass:'CreocoreLoanRepaymentScheduleTransactionProcessor',
+    accentColor:'#993C1D'
+  },
+  overdue:{
+    name:'Overdue/Due Fee/Int, Principal',
+    code:'overduepayment-strategy',
+    type:'Overdue-First',
+    desc:'Clears ALL overdue installments completely before applying payment to current installment. Within each installment: Fees → Interest → Principal. Prevents arrears from aging and accumulating further.',
+    use:'Portfolios with high delinquency where clearing arrears is the priority',
+    order:['⚠ all overdue installments fully','fees','interest','principal'],
+    allocType:'overdue-first',
+    note:'Overdue installments are fully cleared (fees+interest+principal) in chronological order before any payment touches the current installment.',
+    javaClass:'OverduePenaltyChargeFirstLoanRepaymentScheduleTransactionProcessor',
+    accentColor:'#993556'
+  },
+  pipf:{
+    name:'Principal, Interest, Penalties, Fees',
+    code:'principal-interest-penalties-fees',
+    type:'Sequential',
+    desc:'Principal-first strategy. Reduces the outstanding loan balance before clearing interest or charges. Minimizes total interest paid over the loan lifecycle. Borrower-friendly.',
+    use:'Borrower-friendly products, savings-linked loans, Shariah-compliant concepts',
+    order:['principal','interest','penalties','fees'],
+    allocType:'sequential',
+    note:'By reducing principal first, subsequent interest accrual is lower — benefiting the borrower in long-term loans.',
+    javaClass:'PrincipalInterestPenaltiesChargesPaymentStrategy',
+    accentColor:'#185FA5'
+  },
+  ippf:{
+    name:'Interest, Principal, Penalties, Fees',
+    code:'interest-principal-penalties-fees',
+    type:'Sequential',
+    desc:'Interest is cleared before principal reduction. Fees and penalties come last. Simpler than Creocore but same revenue-first intent. Ensures interest income is captured before any principal paydown.',
+    use:'Commercial lenders wanting interest income priority in a simple sequential form',
+    order:['interest','principal','penalties','fees'],
+    allocType:'sequential',
+    note:'',
+    javaClass:'InterestPrincipalPenaltiesChargesPaymentStrategy',
+    accentColor:'#3B6D11'
+  },
+  early:{
+    name:'Early Repayment Strategy',
+    code:'early-repayment-strategy',
+    type:'Early Payment',
+    desc:'Designed for advance or early payments. Interest is RECALCULATED based on actual days elapsed (not scheduled interest amount). After interest adjustment, remaining payment follows PFIP order: Penalties → Fees → Recalculated Interest → Principal.',
+    use:'Products allowing prepayment with interest rebate. Reduces total interest cost for borrowers who pay ahead of schedule.',
+    order:['penalties','fees','interest (recalculated)','principal'],
+    allocType:'sequential',
+    note:'Key difference: if you pay on day 20 of a 30-day cycle, interest is recalculated for only 20 days — not the full scheduled interest amount.',
+    javaClass:'EarlyPaymentLoanRepaymentScheduleTransactionProcessor',
+    accentColor:'#854F0B'
+  }
+};
+
+const COMP_CLASSES = {
+  penalties:{pill:'pen-pill',seg:'pen-seg',bar:'pen-bar',color:'#E24B4A',label:'Penalties'},
+  fees:{pill:'fee-pill',seg:'fee-seg',bar:'fee-bar',color:'#BA7517',label:'Fees'},
+  interest:{pill:'int-pill',seg:'int-seg',bar:'int-bar',color:'#534AB7',label:'Interest'},
+  principal:{pill:'pri-pill',seg:'pri-seg',bar:'pri-bar',color:'#1D9E75',label:'Principal'}
+};
+
+let currentStrategy = 'pfip';
+
+function allocate(payment, stratId) {
+  const s = STRATEGIES[stratId];
+  const b = {...BALANCES};
+  const alloc = {penalties:0,fees:0,interest:0,principal:0};
+  let rem = payment;
+
+  if(s.allocType === 'sequential') {
+    const orders = {
+      pfip:['penalties','fees','interest','principal'],
+      creocore:['interest','principal','fees','penalties'],
+      overdue:['penalties','fees','interest','principal'],
+      pipf:['principal','interest','penalties','fees'],
+      ippf:['interest','principal','penalties','fees'],
+      early:['penalties','fees','interest','principal']
+    };
+    const ord = orders[stratId] || ['penalties','fees','interest','principal'];
+    for(const c of ord){
+      const paid = Math.min(rem, b[c]);
+      alloc[c] = paid; rem -= paid;
+      if(rem <= 0) break;
+    }
+  } else if(s.allocType === 'proportional') {
+    alloc.penalties = Math.min(rem, b.penalties); rem -= alloc.penalties;
+    alloc.fees = Math.min(rem, b.fees); rem -= alloc.fees;
+    const ipTotal = b.interest + b.principal;
+    if(ipTotal > 0 && rem > 0){
+      const ratio = b.interest / ipTotal;
+      const intPaid = Math.min(Math.round(rem * ratio * 100)/100, b.interest);
+      alloc.interest = intPaid; rem -= intPaid;
+      alloc.principal = Math.min(rem, b.principal);
+    }
+  } else if(s.allocType === 'overdue-first') {
+    // Simulate: overdue installment uses same PFIP order
+    for(const c of ['penalties','fees','interest','principal']){
+      const paid = Math.min(rem, b[c]);
+      alloc[c] = paid; rem -= paid;
+      if(rem <= 0) break;
+    }
+  }
+  return alloc;
+}
+
+function selectStrategy(id) {
+  currentStrategy = id;
+  document.querySelectorAll('.strat-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === id);
+    if(b.dataset.id === id) {
+      const s = STRATEGIES[id];
+      b.style.borderColor = s.accentColor;
+      b.style.backgroundColor = '';
+    } else {
+      b.style.borderColor = '';
+      b.style.backgroundColor = '';
+    }
+  });
+  const s = STRATEGIES[id];
+  document.getElementById('strat-name').textContent = s.name;
+  document.getElementById('strat-code').textContent = s.code;
+  document.getElementById('strat-type').textContent = s.type;
+  document.getElementById('strat-desc').textContent = s.desc;
+  document.getElementById('strat-use').textContent = s.use;
+  document.getElementById('java-class').textContent = s.javaClass + '.java';
+
+  // Render allocation order
+  const orderEl = document.getElementById('alloc-order');
+  orderEl.innerHTML = '';
+  s.order.forEach((item, i) => {
+    const key = item.split(' ')[0].toLowerCase();
+    const cls = COMP_CLASSES[key];
+    const pill = document.createElement('span');
+    pill.className = 'comp-pill ' + (cls ? cls.pill : '');
+    if(!cls) {
+      pill.style.background = 'var(--color-background-secondary)';
+      pill.style.color = 'var(--color-text-secondary)';
+      pill.style.border = '0.5px solid var(--color-border-secondary)';
+    }
+    pill.textContent = i+1 + '. ' + item;
+    orderEl.appendChild(pill);
+    if(i < s.order.length - 1) {
+      const sep = document.createElement('span');
+      sep.className = 'arrow-sep';
+      sep.textContent = '→';
+      orderEl.appendChild(sep);
+    }
+  });
+
+  document.getElementById('alloc-note').textContent = s.note;
+  updateCalc();
+}
+
+function updateCalc() {
+  const payment = parseInt(document.getElementById('pay-slider').value);
+  document.getElementById('pay-amount').textContent = '$' + payment;
+
+  const alloc = allocate(payment, currentStrategy);
+  const components = ['penalties','fees','interest','principal'];
+  const bar = document.getElementById('alloc-bar');
+  const labels = document.getElementById('alloc-labels');
+  bar.innerHTML = '';
+  labels.innerHTML = '';
+
+  let hasAny = false;
+  components.forEach(c => {
+    const v = alloc[c];
+    if(v <= 0) return;
+    hasAny = true;
+    const pct = (v / TOTAL * 100).toFixed(1);
+    const seg = document.createElement('div');
+    seg.className = 'alloc-seg ' + COMP_CLASSES[c].seg;
+    seg.style.width = pct + '%';
+    seg.style.minWidth = v > 0 ? '2px' : '0';
+    seg.textContent = v > 20 ? '$'+Math.round(v) : '';
+    bar.appendChild(seg);
+
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500';
+    lbl.className = COMP_CLASSES[c].bar;
+    lbl.innerHTML = '<span>' + COMP_CLASSES[c].label + '</span><span style="opacity:.7">$' + Math.round(v) + '</span>';
+    labels.appendChild(lbl);
+  });
+
+  if(!hasAny) {
+    bar.innerHTML = '<div style="width:100%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--color-text-tertiary)">No payment allocated</div>';
+  }
+
+  const remaining = TOTAL - payment;
+  if(remaining > 0) {
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;background:var(--color-background-secondary);color:var(--color-text-tertiary);margin-left:auto';
+    lbl.textContent = 'Remaining: $' + Math.round(remaining);
+    labels.appendChild(lbl);
+  }
+}
+
+// Init
+selectStrategy('pfip');
+</script>
