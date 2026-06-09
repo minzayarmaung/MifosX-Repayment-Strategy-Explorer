@@ -40,7 +40,7 @@
     body {
       background-color: var(--color-background-page);
       color: var(--color-text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       margin: 0;
       padding: 24px;
       line-height: 1.4;
@@ -291,6 +291,22 @@
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" id="alloc-labels"></div>
       </div>
 
+      <!-- Burmese Summary Box -->
+      <div id="burmese-explanation-box" style="padding:16px;border:1px solid #10b981;border-radius:var(--border-radius-lg);background:#ecfdf5;box-shadow: 0 1px 3px rgba(0,0,0,0.02)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:18px">💡</span>
+          <span style="font-size:13px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:.03em">မြန်မာဘာသာ ရှင်းလင်းချက် (Burmese Summary)</span>
+        </div>
+        <div style="font-size:13px;line-height:1.6;color:#065f46">
+          <div style="margin-bottom:8px">
+            <strong>အနှစ်ချုပ် -</strong> <span id="burmese-summary"></span>
+          </div>
+          <div style="border-top:1px dashed #a7f3d0;padding-top:8px">
+            <strong>လက်တွေ့ဥပမာ -</strong> <span id="burmese-example" style="font-style:italic"></span>
+          </div>
+        </div>
+      </div>
+
       <!-- DB/API Info -->
       <div style="padding:12px 16px;border:1px solid var(--color-border-primary);border-radius:var(--border-radius-lg);background:var(--color-background-primary);font-size:12px;box-shadow: 0 1px 3px rgba(0,0,0,0.02)">
         <div style="display:flex;gap:20px;flex-wrap:wrap">
@@ -318,7 +334,9 @@
         allocType:'sequential',
         note:'',
         javaClass:'DuePenChrgBeforeInterestAndPrincipal',
-        accentColor:'#534AB7'
+        accentColor:'#534AB7',
+        burmese_summary: 'ဒဏ်ကြေး၊ ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်ဆုံးခုနှိမ်ပြီးမှ ကျန်ရှိသောငွေကို အရင်းထဲမှ နောက်ဆုံးမှ ခုနှိမ်နှုတ်ယူသည့် ပုံမှန်စနစ်ဖြစ်သည်။',
+        burmese_example: 'လူကြီးမင်းက လစဉ်ကြေး ၅ သောင်းသွင်းရမည်။ ပေးရန်နောက်ကျသဖြင့် ဒဏ်ကြေး ၁ ထောင် တက်နေပါက သွင်းငွေထဲမှ ဒဏ်ကြေး ၁ ထောင်ကို အရင်နှုတ်ယူပြီးမှ ကျန်ငွေကို အတိုးနှင့် အရင်းထဲ ခုနှိမ်ပေးပါမည်။'
       },
       heavens:{
         name:'HeavensFamily Unique Strategy',
@@ -330,7 +348,9 @@
         allocType:'proportional',
         note:'Proportional split: if outstanding interest=$100 and principal=$500 (ratio 1:5), a $120 remaining payment allocates $20 to interest and $100 to principal.',
         javaClass:'HeavensFamilyLoanRepaymentScheduleTransactionProcessor',
-        accentColor:'#0F6E56'
+        accentColor:'#0F6E56',
+        burmese_summary: 'ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများနှုတ်ပြီးနောက် ကျန်ရှိသောငွေကို အတိုးနှင့် အရင်းနှစ်ခုလုံးထဲသို့ တစ်ခုချင်းမဖြတ်ဘဲ အချိုးကျတစ်ပြိုင်နက် မျှဝေခုနှိမ်ပေးသည့်စနစ်ဖြစ်သည်။',
+        burmese_example: 'သွင်းငွေထဲမှ ဒဏ်ကြေးများနှုတ်ပြီး ကျန်သောငွေကို အတိုးသက်သက် သို့မဟုတ် အရင်းသက်သက် မခွဲဘဲ အတိုးရော အရင်းကိုပါ တစ်ပြိုင်နက် မျှဆပ်ပေးသဖြင့် အရင်းလည်းလျော့ အတိုးလည်းကျလွယ်စေသည်။'
       },
       creocore:{
         name:'Creocore Unique Strategy',
@@ -342,7 +362,9 @@
         allocType:'sequential',
         note:'Overdue handling: overdue interest → overdue principal → current interest → current principal → fees → penalties.',
         javaClass:'CreocoreLoanRepaymentScheduleTransactionProcessor',
-        accentColor:'#993C1D'
+        accentColor:'#993C1D',
+        burmese_summary: 'အတိုးရရှိမှုကို ပထမဆုံးဦးစားပေး ခုနှိမ်ပြီးမှ အရင်း၊ ဝန်ဆောင်ခနှင့် ဒဏ်ကြေးများကို နောက်ဆုံးမှ နှုတ်ယူသည့် စီးပွားရေးဆန်ဆန် စနစ်ဖြစ်သည်။',
+        burmese_example: 'ဒဏ်ကြေးများ ရှိနေသော်လည်း မနှုတ်သေးဘဲ လုပ်ငန်း၏ အဓိက အတိုးဝင်ငွေကိုသာ အရင်ဆုံး ခုနှိမ်ယူလိုက်ခြင်းမျိုးဖြစ်သည်။'
       },
       overdue:{
         name:'Overdue/Due Fee/Int, Principal',
@@ -354,7 +376,9 @@
         allocType:'overdue-first',
         note:'Overdue installments are fully cleared (fees+interest+principal) in chronological order before any payment touches the current installment.',
         javaClass:'OverduePenaltyChargeFirstLoanRepaymentScheduleTransactionProcessor',
-        accentColor:'#993556'
+        accentColor:'#993556',
+        burmese_summary: 'ယခင်လများက ကျန်ရှိနေသော လစဉ်ကြွေးကျန်အဟောင်းများ အားလုံးကို အရင်ဆုံး ပြတ်တောက်အောင်ဆပ်ပြီးမှ လက်ရှိလအတွက် သွင်းပေးသည့်စနစ်ဖြစ်သည်။',
+        burmese_example: 'ပြီးခဲ့သည့်လက ပိုက်ဆံမသွင်းရသေးပါက ယခုလသွင်းငွေသည် ယခုလအတွက်မရောက်ဘဲ လွန်ခဲ့သောလမှ ကြွေးကျန်အဟောင်းများကို အရင်ဆုံး လိုက်လံခုနှိမ်သွားပါမည်။'
       },
       pipf:{
         name:'Principal, Interest, Penalties, Fees',
@@ -366,7 +390,9 @@
         allocType:'sequential',
         note:'By reducing principal first, subsequent interest accrual is lower — benefiting the borrower in long-term loans.',
         javaClass:'PrincipalInterestPenaltiesChargesPaymentStrategy',
-        accentColor:'#185FA5'
+        accentColor:'#185FA5',
+        burmese_summary: 'အရင်းငွေကို အရင်ဆုံး လျှော့ချပေးသောစနစ် ဖြစ်သဖြင့် အတိုးသက်သာစေပြီး အကြွေးဆပ်သူအတွက် အလွန်အကျိုးရှိစေမည့်စနစ် ဖြစ်သည်။',
+        burmese_example: 'သွင်းလိုက်သောငွေသည် အတိုး သို့မဟုတ် ဒဏ်ကြေးများဆီသို့ မသွားဘဲ မိမိချေးထားသော အရင်းငွေမကြီးကို အရင်ဆုံးအကျနှုတ်ပေးသဖြင့် နောက်လများတွင် အတိုးအများကြီး သက်သာသွားပါမည်။'
       },
       ippf:{
         name:'Interest, Principal, Penalties, Fees',
@@ -378,7 +404,9 @@
         allocType:'sequential',
         note:'',
         javaClass:'InterestPrincipalPenaltiesChargesPaymentStrategy',
-        accentColor:'#3B6D11'
+        accentColor:'#3B6D11',
+        burmese_summary: 'အတိုးကို အရင်ဆုံး ခုနှိမ်ပြီးမှ အရင်းကိုနှုတ်သည်။ ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများကို နောက်ဆုံးမှ ဖြတ်တောက်သည့်စနစ်ဖြစ်သည်။',
+        burmese_example: 'သွင်းငွေကို အတိုးအရင်ဖြတ်၊ ကျန်လျှင် အရင်းကိုနှုတ်ပြီး ဒဏ်ကြေးများနှင့် ဝန်ဆောင်ခများကို နောက်ဆုံးမှသာ ရှင်းရသည့် ပုံစံမျိုးဖြစ်သည်။'
       },
       early:{
         name:'Early Repayment Strategy',
@@ -390,7 +418,9 @@
         allocType:'sequential',
         note:'Key difference: if you pay on day 20 of a 30-day cycle, interest is recalculated for only 20 days — not the full scheduled interest amount.',
         javaClass:'EarlyPaymentLoanRepaymentScheduleTransactionProcessor',
-        accentColor:'#854F0B'
+        accentColor:'#854F0B',
+        burmese_summary: 'သတ်မှတ်ရက်ထက် ကြိုတင်စောသွင်းလျှင် ဖြတ်သန်းသွားသောရက်အမှန်ပေါ်သာ မူတည်ပြီး အတိုးကို ပြန်လည်လျှော့တွက်ပေးသည့်စနစ်ဖြစ်သည်။',
+        burmese_example: 'ရက်ပေါင်း ၃၀ ချေးထားသော်လည်း ရက် ၂၀ ၌ အကြေလာဆပ်ပါက ရက် ၂၀ စာ အတိုးသာ တွက်ယူပြီး ကျန်ရက်များအတွက် အတိုးငွေကို လျှော့ပေးလိုက်ခြင်းဖြစ်သည်။'
       }
     };
 
@@ -465,6 +495,10 @@
       document.getElementById('strat-desc').textContent = s.desc;
       document.getElementById('strat-use').textContent = s.use;
       document.getElementById('java-class').textContent = s.javaClass + '.java';
+
+      // Update Burmese explanations
+      document.getElementById('burmese-summary').textContent = s.burmese_summary;
+      document.getElementById('burmese-example').textContent = s.burmese_example;
 
       // Render allocation order
       const orderEl = document.getElementById('alloc-order');
