@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MifosX Repayment Strategy Explorer</title>
   <style>
-    /* Explicitly define theme variables for a standalone environment */
     :root {
-      --color-background-page: #f3f4f6; /* Modern light grey page background */
-      --color-background-primary: #ffffff; /* Clean white cards */
-      --color-background-secondary: #f9fafb; /* Slightly off-white for details */
+      --color-background-page: #f3f4f6;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f9fafb;
       --color-border-primary: #e5e7eb;
       --color-border-secondary: #e5e7eb;
       --color-border-tertiary: #d1d5db;
@@ -21,11 +20,10 @@
       --border-radius-lg: 10px;
     }
 
-    /* Dark mode support */
     @media (prefers-color-scheme: dark) {
       :root {
-        --color-background-page: #111827; /* Dark charcoal page background */
-        --color-background-primary: #1f2937; /* Lighter dark card backgrounds */
+        --color-background-page: #111827;
+        --color-background-primary: #1f2937;
         --color-background-secondary: #374151;
         --color-border-primary: #374151;
         --color-border-secondary: #4b5563;
@@ -36,7 +34,6 @@
       }
     }
 
-    /* Global page styles for the grey background look */
     body {
       background-color: var(--color-background-page);
       color: var(--color-text-primary);
@@ -57,7 +54,6 @@
       border: 0;
     }
 
-    /* Title Styling */
     .app-title {
       font-size: 24px;
       font-weight: 700;
@@ -105,12 +101,6 @@
       color: var(--color-text-tertiary);
       margin: 0 2px;
     }
-    .info-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
     .tag {
       padding: 3px 8px;
       border-radius: 4px;
@@ -119,11 +109,6 @@
       color: var(--color-text-secondary);
       background: var(--color-background-secondary);
       font-weight: 500;
-    }
-    .seg-label {
-      font-size: 11px;
-      text-align: center;
-      margin-top: 4px;
     }
     .alloc-bar-wrap {
       display: flex;
@@ -148,6 +133,67 @@
       color: var(--color-text-tertiary);
       margin-top: 4px;
       font-style: italic;
+    }
+
+    .toggle-btn {
+      background: #047857;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+    .toggle-btn:hover { background: #065f46; }
+
+    .detail-panel {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #a7f3d0;
+      display: none;
+    }
+    .detail-panel.open { display: block; }
+
+    .mmo-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .mmo-table th, .mmo-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    
+    /* Table Header Text and Background Styles (Light Theme) */
+    .mmo-table th { 
+      background: #d1fae5; 
+      color: #065f46; 
+    }
+    
+    /* Table Data Text and Border Styles (Light Theme) */
+    .mmo-table td { 
+      color: #1e293b; 
+    }
+
+    @media (prefers-color-scheme: dark) {
+      /* Table Header Styles (Dark Theme) */
+      .mmo-table th { 
+        background: #115e59; 
+        color: #ccfbf1; 
+      }
+      /* Table Data & Border Styles (Dark Theme) */
+      .mmo-table td { 
+        color: #f1f5f9; 
+        border-color: #4b5563; 
+      }
     }
 
     .pen-pill { background: #FCEBEB; color: #791F1F; } 
@@ -299,11 +345,38 @@
         </div>
         <div style="font-size:13px;line-height:1.6;color:#065f46">
           <div style="margin-bottom:8px">
-            <strong>အနှစ်ချုပ် -</strong> <span id="burmese-summary"></span>
+            <strong>အနှစ်ချုပ် -</strong> <span id="burmese-summary" style="color:#0f5132;"></span>
           </div>
-          <div style="border-top:1px dashed #a7f3d0;padding-top:8px">
-            <strong>လက်တွေ့ဥပမာ -</strong> <span id="burmese-example" style="font-style:italic"></span>
+          <div style="margin-bottom:4px;">
+            <strong>လက်တွေ့ဥပမာ -</strong> <span id="burmese-example" style="font-style:italic;color:#157347;"></span>
           </div>
+          
+          <!-- Trigger Button for Long Explanation -->
+          <button class="toggle-btn" id="toggle-detail-btn" onclick="toggleDetail()">
+            <span>⬇ အသေးစိတ် တွက်ချက်မှုပုံစံ ကြည့်ရန် (Show Detailed Calculation)</span>
+          </button>
+
+          <!-- Hidden Long Explanation Panel -->
+          <div class="detail-panel" id="burmese-long-detail">
+            <div style="font-weight:700;margin-bottom:4px;color:#047857;">📊 သိန်း ၁၀၀ ချေးငွေ (အတိုး ၁၀%၊ လစဉ် ၁၅ သိန်းဆပ်) ဖြင့် နမူနာတွက်ချက်မှု-</div>
+            <div id="burmese-scenario-text" style="margin-bottom:10px;color:#0f5132;"></div>
+            
+            <table class="mmo-table">
+              <thead>
+                <tr>
+                  <th>ခေါင်းစဉ်</th>
+                  <th>မူလကြွေးကျန်</th>
+                  <th>ဖြတ်တောက်မှု</th>
+                  <th>နောက်လကျန်မည့်စာရင်း</th>
+                </tr>
+              </thead>
+              <tbody id="mmo-table-body">
+                <!-- Dynamically injected rows -->
+              </tbody>
+            </table>
+            <div id="burmese-scenario-footer" style="margin-top:10px;font-weight:600;color:#115e59;"></div>
+          </div>
+
         </div>
       </div>
 
@@ -335,8 +408,14 @@
         note:'',
         javaClass:'DuePenChrgBeforeInterestAndPrincipal',
         accentColor:'#534AB7',
-        burmese_summary: 'ဒဏ်ကြေး၊ ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်ဆုံး ပြတ်အောင်ခုနှိမ်ပြီးမှ ကျန်ရှိသောငွေကို အရင်းထဲမှ နောက်ဆုံးမှ နှုတ်ယူသည့် ပုံမှန်စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- သိန်း ၅၀ ချေးထားရာတွင် အတိုးက ၁ သိန်း၊ ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခက ၈ သောင်း တက်နေပါက လူကြီးမင်းဆပ်လိုက်သော ၅ သိန်းအနက်မှ ဒဏ်ကြေး/ဝန်ဆောင်ခ ၈ သောင်းနှင့် အတိုး ၁ သိန်း (စုစုပေါင်း ၁ သိန်း ၈ သောင်း) ကို အရင်အပြည့်ဖြတ်လိုက်ပြီး၊ ကျန်ငွေ ၃ သိန်း ၂ သောင်းကိုသာ အရင်းထဲမှ နှုတ်ပေးပါသဖြင့် အရင်းမှာ ၄၆ သိန်း ၈ သောင်း ကျန်ရှိနေမည်ဖြစ်သည်။'
+        burmese_summary: 'Consolidation of Penalties, Fees, Interest, and Principal. ဒဏ်ကြေး၊ ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်ဆုံး ပြတ်အောင်ခုနှိမ်ပြီးမှ ကျန်ရှိသောငွေကို အရင်းထဲမှ နောက်ဆုံးမှ နှုတ်ယူသည့် ပုံမှန်စနစ်ဖြစ်သည်။',
+        burmese_example: 'ဒဏ်ကြေး/ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်အပြည့်ဖြတ်ပြီးမှ၊ ကျန်ငွေကိုသာ အရင်းထဲမှ နှုတ်ပေးပါသဖြင့် အရင်းလျော့နှုန်း နှေးပါသည်။',
+        long_scenario_intro: 'လူကြီးမင်းက အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း ပေးရန်ရှိချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက ပုံမှန်အတိုင်း အတိုးကို အရင်အပြတ်နှုတ်ပါမည်။',
+        long_table:[
+          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အပြည့်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၅ သိန်း (ကျန်တာဖြတ်)', rem:'၉၅ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- အရင်းက ၅ သိန်းပဲ လျော့သွားလို့ နောက်လကျရင် ကျန်တဲ့ အရင်း ၉၅ သိန်းပေါ် အတိုး ၁၀% (၉ သိန်းခွဲ) ထပ်တက်ပါမယ်။'
       },
       heavens:{
         name:'HeavensFamily Unique Strategy',
@@ -350,7 +429,13 @@
         javaClass:'HeavensFamilyLoanRepaymentScheduleTransactionProcessor',
         accentColor:'#0F6E56',
         burmese_summary: 'ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများနှုတ်ပြီးနောက် ကျန်ရှိသောငွေကို အတိုးသက်သက် သို့မဟုတ် အရင်းသက်သက် တစ်ခုချင်းမဖြတ်ဘဲ အချိုးကျတစ်ပြိုင်နက် ခွဲဝေခုနှိမ်ပေးသည့်စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- သိန်း ၅၀ (အရင်း) နှင့် ၁ သိန်း (အတိုး) ပေးရန်ရှိချိန်တွင် ၅ သိန်းဆပ်ပါက ကျန်ငွေကို အရင်းနှင့်အတိုး မျှမျှတတ ဆпорနှုတ်ယူပေးသဖြင့် အရင်းလည်းပြိုင်တူကျ၊ အတိုးလည်းပြိုင်တူကျပြီး ချေးယူသူအတွက် ဝန်ပေါ့စေသည်။'
+        burmese_example: 'သွင်းငွေကို အတိုးထဲချည်းပဲ အကုန်မနှစ်ဘဲ အရင်းထဲကိုပါ မျှစိုက်ပေးလိုက်တာကြောင့် အရင်းရောအတိုးပါ ပြိုင်တူလျော့ကျသွားစေပါတယ်။',
+        long_scenario_intro: 'အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း ရှိနေချိန်တွင် အချိုးအစားမှာ ၁၀ : ၁ ဖြစ်သဖြင့် သွင်းလိုက်သော ၁၅ သိန်းကို ထိုအချိုးအတိုင်း မျှပြီး ခုနှိမ်ပေးပါမည်။',
+        long_table:[
+          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၁.၃၆ သိန်း (အချိုးကျ)', rem:'၈.၆၄ သိန်း'},
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၁၃.၆၄ သိန်း (အချိုးကျ)', rem:'၈၆.၃၆ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- အရင်းက ၁၃ သိန်းကျော်အထိ အများကြီး လျော့သွားလို့ နောက်လကျရင် ကျန်တဲ့အရင်း ၈၆ သိန်းကျော်အပေါ်ပဲ အတိုး ၁၀% ထပ်တွက်ရတော့မှာမလို့ အတိုးအများကြီး သက်သာစေပါတယ်။'
       },
       creocore:{
         name:'Creocore Unique Strategy',
@@ -364,7 +449,14 @@
         javaClass:'CreocoreLoanRepaymentScheduleTransactionProcessor',
         accentColor:'#993C1D',
         burmese_summary: 'အတိုးရရှိမှုကို ပထမဆုံးဦးစားပေး ဖြတ်တောက်ပြီးမှ အရင်း၊ ဝန်ဆောင်ခနှင့် ဒဏ်ကြေးများကို နောက်ဆုံးမှ နှုတ်ယူသည့် လုပ်ငန်းအမြတ်ဦးစားပေး စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- လူကြီးမင်းဆပ်လိုက်သော ၅ သိန်းအနက်မှ ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများ မည်မျှပင်ရှိပါစေ အရင်မနှုတ်သေးဘဲ၊ အတိုး ၁ သိန်းကို အရင်ဖြတ်၊ ကျန်ငွေကို အရင်းဖြတ်ပြီးမှ ဒဏ်ကြေးကို နောက်ဆုံးမှသာ စာရင်းရှင်းပေးသောစနစ်ဖြစ်သည်။'
+        burmese_example: 'လုပ်ငန်းအတွက် ဝင်ငွေဖြစ်စေမယ့် အတိုးကို အရင်ဆုံးသိမ်းပြီး၊ ကုမ္ပဏီဒဏ်ကြေး သို့မဟုတ် ဝန်ဆောင်ခတွေကို မဖြတ်သေးဘဲ အနောက်ဆုံးမှာ ထားတဲ့ပုံစံပါ။',
+        long_scenario_intro: 'လူကြီးမင်းဆပ်လိုက်သော ၁၅ သိန်းထဲမှ ဒဏ်ကြေးများ ဘယ်လောက်ရှိရှိ မနှုတ်သေးဘဲ လုပ်ငန်း၏ အဓိက အတိုးဝင်ငွေကိုသာ အရင်ဆုံး ခုနှိမ်ယူလိုက်ခြင်းမျိုးဖြစ်သည်။',
+        long_table:[
+          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (ပထမဦးဆုံးဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၅ သိန်း (ဒုတိယဖြတ်)', rem:'၉၅ သိန်း'},
+          {name:'ဝန်ဆောင်ခ/ဒဏ်ကြေး', due:'၁ သိန်း', pay:'၀ ကျပ် (မဖြတ်သေး)', rem:'၁ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- အတိုးနှင့် အရင်းကို အရင်ရှင်းပြီးမှ ဒဏ်ကြေးများကို နောက်ဆုံးကျမှသာ ဆက်လက်ခုနှိမ်သွားမည့် စီးပွားရေးဆန်ဆန် စနစ်ဖြစ်သည်။'
       },
       overdue:{
         name:'Overdue/Due Fee/Int, Principal',
@@ -378,7 +470,13 @@
         javaClass:'OverduePenaltyChargeFirstLoanRepaymentScheduleTransactionProcessor',
         accentColor:'#993556',
         burmese_summary: 'ယခင်လများက ကျန်ရှိနေသော လစဉ်ကြွေးကျန်အဟောင်းများ (အတိုး၊ အရင်း၊ ဒဏ်ကြေးအားလုံး) ကို လုံးဝပြတ်တောက်အောင် အရင်ဆပ်ပြီးမှ လက်ရှိလဆပ်ရမည့်အလှည့်သို့ ရောက်ရှိစေသည့်စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- ပြီးခဲ့သည့်လက ကြွေးကျန် ၅ သိန်းရှိနေပြီး ယခုလတွင် ၅ သိန်းလာသွင်းပါက၊ ၎င်းသွင်းငွေသည် ယခုလအတွက်မရောက်ဘဲ လွန်ခဲ့သောလမှ ကြွေးကျန်အဟောင်းများကို အရင်ဆုံး လိုက်လံခုနှိမ်သွားပါမည်။'
+        burmese_example: 'လွန်ခဲ့သောလမှ ကြွေးကျန်အဟောင်းများကို အရင်ဆုံး လိုက်လံခုနှိမ်သွားပါမည်။',
+        long_scenario_intro: 'ပြီးခဲ့သည့်လက ပေးရန်ကျန် ကြွေးကျန်အဟောင်း ၁၀ သိန်း ရှိနေပြီး၊ ယခုလအတွက် ထပ်မံပေးရမည့်ငွေက ၅ သိန်း ရှိနေချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက-',
+        long_table:[
+          {name:'လဟောင်း ကြွေးကျန် (Overdue)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အပြည့်အရင်ဆပ်)', rem:'၀ ကျပ်'},
+          {name:'လက်ရှိလ ပေးရန်စုစုပေါင်း', due:'၅ သိန်း', pay:'၅ သိန်း (ကျန်မှဆပ်ရ)', rem:'၀ ကျပ်'}
+        ],
+        long_footer: '📌 ရလဒ်- သွင်းငွေသည် လက်ရှိလအတွက် တိုက်ရိုက်မရောက်ဘဲ နောက်ကျနေသော ကြွေးကျန်သမိုင်းကြောင်းဟောင်းများကို အရင်လိုက်ရှင်းပစ်ခြင်း ဖြစ်သည်။'
       },
       pipf:{
         name:'Principal, Interest, Penalties, Fees',
@@ -392,7 +490,13 @@
         javaClass:'PrincipalInterestPenaltiesChargesPaymentStrategy',
         accentColor:'#185FA5',
         burmese_summary: 'သွင်းလိုက်သောငွေကို အရင်းငွေမှ အရင်ဆုံးနှုတ်ပေးသည့်စနစ်ဖြစ်ပြီး၊ အရင်းအမြန်ကျသဖြင့် နောက်ပိုင်းပေးရမည့် အတိုးနှုန်းကို သိသိသာသာ အသက်သာဆုံးဖြစ်စေသော ချေးယူသူအကြိုက်စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- သိန်း ၅၀ ချေးထားရာတွင် လူကြီးမင်းက ၅ သိန်း အရင်ဆပ်လိုက်ပါက ဒဏ်ကြေးနှင့် အတိုးကို မနှုတ်သေးဘဲ အရင်းထဲမှ တိုက်ရိုက်ခုနှိမ်ပေးသဖြင့် အရင်းမှာ ၄၅ သိန်းသာ ကျန်တော့သည်။ နောက်လများတွင် ကျန်ရှိသော ၄၅ သိန်းအပေါ်၌သာ အတိုးဆက်တွက်ပေးတော့သဖြင့် အတိုးအများကြီး ထပ်မံလျော့ကျသွားပါမည်။'
+        burmese_example: 'အတိုး သို့မဟုတ် ဒဏ်ကြေးတွေကို မနှုတ်သေးဘဲ မိမိချေးထားတဲ့ အရင်းမကြီးကို အရင်ဆုံး အကျနှုတ်ပေးသဖြင့် နောက်လများတွင် အတိုး သိသိသာသာသက်သာသွားသည်။',
+        long_scenario_intro: 'အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း ရှိနေချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက၊ အတိုးကို လုံးဝမနှုတ်သေးဘဲ အရင်းထဲကို အရင်ဦးဆုံး ခုနှိမ်ပါမည်။',
+        long_table:[
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၁၅ သိန်း (အပြည့်အရင်နှုတ်)', rem:'၈၅ သိန်း'},
+          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၀ ကျပ် (မနှုတ်သေး)', rem:'၁၀ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- အရင်းက ၈၅ သိန်းပဲ ကျန်တော့တဲ့အတွက်၊ နောက်လကျရင် ကျန်ရှိတဲ့ ၈၅ သိန်းအပေါ်၌သာ အတိုး ၁၀% ထပ်တွက်တော့မှာမလို့ အတိုးနှုန်း အများကြီး လျော့ကျသွားပါမည်။'
       },
       ippf:{
         name:'Interest, Principal, Penalties, Fees',
@@ -406,7 +510,13 @@
         javaClass:'InterestPrincipalPenaltiesChargesPaymentStrategy',
         accentColor:'#3B6D11',
         burmese_summary: 'အတိုးကို အရင်ဆုံး ခုနှိမ်ပြီးမှ အရင်းကိုနှုတ်သည်။ ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများကို နောက်ဆုံးမှ ဖြတ်တောက်သည့်စနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- ၅ သိန်းဆပ်ပါက ဒဏ်ကြေးမဖြတ်သေးဘဲ အတိုး ၁ သိန်းကို အရင်ဖြတ်ကာ ကျန်ငွေ ၄ သိန်းကို အရင်းထဲမှ ခုနှိမ်နှုတ်ပေးပြီး၊ ဒဏ်ကြေးကျန်ရှိပါက နောက်ဆုံးမှသာ ရှင်းရသည့်ပုံစံမျိုးဖြစ်သည်။'
+        burmese_example: 'သွင်းငွေကို အတိုးအရင်ဖြတ်, ကျန်လျှင် အရင်းကိုနှုတ်ပြီး ဒဏ်ကြေးများကို နောက်ဆုံးမှသာ ရှင်းရသည့်ပုံစံမျိုးဖြစ်သည်။',
+        long_scenario_intro: 'အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း တက်နေချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက ဒဏ်ကြေးများကို လုံးဝမဖြတ်သေးဘဲ အတိုးကို အပြတ်အရင် နှုတ်ယူပါမည်။',
+        long_table:[
+          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အရင်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၅ သိန်း (ကျန်မှဖြတ်)', rem:'၉၅ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- ဒဏ်ကြေး သို့မဟုတ် ဝန်ဆောင်ခ ကျန်ရှိနေသေးပါက အရင်းအမြတ်များ ရှင်းလင်းပြီးမှ နောက်ဆုံးအဆင့်ကျမှသာ လိုက်လံခုနှိမ်နှုတ်ယူပါမည်။'
       },
       early:{
         name:'Early Repayment Strategy',
@@ -420,7 +530,14 @@
         javaClass:'EarlyPaymentLoanRepaymentScheduleTransactionProcessor',
         accentColor:'#854F0B',
         burmese_summary: 'သတ်မှတ်ရက်ထက် ကြိုတင်ပြီး စောစောဆပ်ပါက ဖြတ်သန်းသွားသောရက်အမှန်ပေါ်၌သာ မူတည်ပြီး အတိုးကို ပြန်လည်လျှော့တွက်ပေးသည့် စမတ်ကျသောစနစ်ဖြစ်သည်။',
-        burmese_example: 'ဥပမာ- ရက်ပေါင်း ၃၀ စာချုပ်ထားသော်လည်း ရက် ၂၀ ၌ ငွေကြိုတင်လာဆပ်ပါက ရက် ၂၀ စာ အတိုးသာ တွက်ယူပြီး ကျန်ရက် ၁၀ စာအတွက် အတိုးငွေကို လျှော့ပေးလိုက်ခြင်းဖြစ်သည်။'
+        burmese_example: 'ရက်ပေါင်း ၃၀ ချေးထားသော်လည်း ရက် ၂၀ ၌ အကြေလာဆပ်ပါက ရက် ၂၀ စာ အတိုးသာ တွက်ယူပြီး ကျန်ရက်များအတွက် အတိုးငွေကို လျှော့ပေးလိုက်ခြင်းဖြစ်သည်။',
+        long_scenario_intro: 'ရက် ၃၀ အတွက် အတိုးက ၁၀ သိန်းကျသင့်သော်လည်း၊ လူကြီးမင်းက ရက် ၂၀ မှာတင် စောစီးစွာ လာရောက်ငွေချေပါက အတိုးကို ရက် ၂၀ စာ (၆.၆ သိန်း) သာ ပြန်လည်လျှော့တွက်ပေးပါမည်။',
+        long_table:[
+          {name:'အတိုးဟောင်း (Scheduled)', due:'၁၀ သိန်း', pay:'-', rem:'-'},
+          {name:'အတိုးအသစ် ပြန်တွက်ချက်မှု', due:'၆.၆ သိန်း', pay:'၆.၆ သိန်း (စောသွင်းလို့ လျော့)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၈.၄ သိန်း (ကျန်ငွေအကုန်ဖြတ်)', rem:'၉၁.၆ သိန်း'}
+        ],
+        long_footer: '📌 ရလဒ်- သတ်မှတ်ရက်ထက် စောဆပ်သည့်အတွက် အတိုး ၃ သိန်းကျော် သက်သာခွင့် (Rebate) ရရှိသွားခြင်းဖြစ်ပါသည်။'
       }
     };
 
@@ -465,7 +582,6 @@
           alloc.principal = Math.min(rem, b.principal);
         }
       } else if(s.allocType === 'overdue-first') {
-        // Simulate: overdue installment uses same PFIP order
         for(const c of ['penalties','fees','interest','principal']){
           const paid = Math.min(rem, b[c]);
           alloc[c] = paid; rem -= paid;
@@ -475,19 +591,34 @@
       return alloc;
     }
 
+    function toggleDetail() {
+      const panel = document.getElementById('burmese-long-detail');
+      const btn = document.getElementById('toggle-detail-btn');
+      if (panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        btn.querySelector('span').textContent = '⬇ အသေးစိတ် တွက်ချက်မှုပုံစံ ကြည့်ရန် (Show Detailed Calculation)';
+      } else {
+        panel.classList.add('open');
+        btn.querySelector('span').textContent = '⬆ အသေးစိတ် အချက်အလက်များ ပြန်သိမ်းရန် (Hide Calculation)';
+      }
+    }
+
     function selectStrategy(id) {
       currentStrategy = id;
+      
+      document.getElementById('burmese-long-detail').classList.remove('open');
+      document.getElementById('toggle-detail-btn').querySelector('span').textContent = '⬇ အသေးစိတ် တွက်ချက်မှုပုံစံ ကြည့်ရန် (Show Detailed Calculation)';
+
       document.querySelectorAll('.strat-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.id === id);
         if(b.dataset.id === id) {
           const s = STRATEGIES[id];
           b.style.borderColor = s.accentColor;
-          b.style.backgroundColor = '';
         } else {
           b.style.borderColor = '';
-          b.style.backgroundColor = '';
         }
       });
+      
       const s = STRATEGIES[id];
       document.getElementById('strat-name').textContent = s.name;
       document.getElementById('strat-code').textContent = s.code;
@@ -496,11 +627,25 @@
       document.getElementById('strat-use').textContent = s.use;
       document.getElementById('java-class').textContent = s.javaClass + '.java';
 
-      // Update Burmese explanations
       document.getElementById('burmese-summary').textContent = s.burmese_summary;
       document.getElementById('burmese-example').textContent = s.burmese_example;
 
-      // Render allocation order
+      document.getElementById('burmese-scenario-text').textContent = s.long_scenario_intro;
+      document.getElementById('burmese-scenario-footer').textContent = s.long_footer;
+      
+      const tbody = document.getElementById('mmo-table-body');
+      tbody.innerHTML = '';
+      s.long_table.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:600; color: inherit;">${row.name}</td>
+          <td style="color: inherit;">${row.due}</td>
+          <td style="color:#059669; font-weight:700;">${row.pay}</td>
+          <td style="color: inherit;">${row.rem}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
       const orderEl = document.getElementById('alloc-order');
       orderEl.innerHTML = '';
       s.order.forEach((item, i) => {
