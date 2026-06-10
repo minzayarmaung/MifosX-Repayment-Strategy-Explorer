@@ -135,27 +135,63 @@
       font-style: italic;
     }
 
+    .burmese-box {
+      padding: 16px;
+      border: 1.5px solid #10b981;
+      border-radius: var(--border-radius-lg);
+      background-color: #ffffff; /* Crisp Pure White Background */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      color: #1f2937;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .burmese-box-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #065f46; /* High contrast emerald for header */
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .burmese-box-content {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #374151; /* Dark charcoal text for maximum legibility on white */
+    }
+
+    .burmese-box-summary {
+      color: #111827; /* Darkest slate for bold summary text */
+      font-weight: 600;
+    }
+
+    .burmese-box-example {
+      font-style: italic;
+      color: #047857; /* Dark green for italicized examples */
+      font-weight: 500;
+    }
+
     .toggle-btn {
       background: #047857;
       color: white;
       border: none;
-      padding: 6px 12px;
+      padding: 8px 14px;
       font-size: 11px;
       font-weight: 600;
-      border-radius: 4px;
+      border-radius: var(--border-radius-md);
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 12px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition: background 0.2s;
+      gap: 6px;
+      transition: background 0.2s, transform 0.1s;
     }
     .toggle-btn:hover { background: #065f46; }
+    .toggle-btn:active { transform: scale(0.98); }
 
     .detail-panel {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed #a7f3d0;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed #cbd5e1;
       display: none;
     }
     .detail-panel.open { display: block; }
@@ -163,36 +199,60 @@
     .mmo-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 12px;
+      background-color: #fafafa;
     }
+    
     .mmo-table th, .mmo-table td {
-      border: 1px solid #cbd5e1;
-      padding: 6px 10px;
+      padding: 10px 12px;
       text-align: left;
     }
     
-    /* Table Header Text and Background Styles (Light Theme) */
     .mmo-table th { 
-      background: #d1fae5; 
-      color: #065f46; 
+      background: #f0fdf4; 
+      color: #166534; 
+      font-weight: 700;
+      border: 1px solid #e2e8f0;
     }
-    
-    /* Table Data Text and Border Styles (Light Theme) */
     .mmo-table td { 
-      color: #1e293b; 
+      color: #334155 !important; 
+      border: 1px solid #e2e8f0;
     }
 
+    /* Dark Mode overrides for Burmese box elements */
     @media (prefers-color-scheme: dark) {
-      /* Table Header Styles (Dark Theme) */
-      .mmo-table th { 
-        background: #115e59; 
-        color: #ccfbf1; 
+      .burmese-box {
+        background-color: #1f2937; /* Dark card background */
+        border-color: #059669;
+        color: #f3f4f6;
       }
-      /* Table Data & Border Styles (Dark Theme) */
+      .burmese-box-title {
+        color: #34d399; /* Bright mint in dark mode */
+      }
+      .burmese-box-content {
+        color: #e5e7eb;
+      }
+      .burmese-box-summary {
+        color: #ffffff;
+      }
+      .burmese-box-example {
+        color: #a7f3d0;
+      }
+      .detail-panel {
+        border-top-color: #4b5563;
+      }
+      .mmo-table {
+        background-color: #111827;
+      }
+      .mmo-table th { 
+        background: #064e3b; 
+        color: #a7f3d0; 
+        border-color: #374151;
+      }
       .mmo-table td { 
-        color: #f1f5f9; 
-        border-color: #4b5563; 
+        color: #e5e7eb !important; 
+        border-color: #374151; 
       }
     }
 
@@ -254,16 +314,16 @@
         <span style="font-weight:600;color:var(--color-text-primary)">④ Overdue First</span><br>
         <span>Clear arrears first</span>
       </button>
-      <button class="strat-btn" data-id="pipf" onclick="selectStrategy('pipf')">
-        <span style="font-weight:600;color:var(--color-text-primary)">⑤ PIPF</span><br>
-        <span>Principal first</span>
+      <button class="strat-btn" data-id="due_pfip_advance_ppfi" onclick="selectStrategy('due_pfip_advance_ppfi')">
+        <span style="font-weight:600;color:var(--color-text-primary)">⑤ PFIP + Advance Principal</span><br>
+        <span>Advance Principal First</span>
       </button>
-      <button class="strat-btn" data-id="ippf" onclick="selectStrategy('ippf')">
-        <span style="font-weight:600;color:var(--color-text-primary)">⑥ IPPF</span><br>
-        <span>Interest first</span>
+      <button class="strat-btn" data-id="due_pipf_advance_pipf" onclick="selectStrategy('due_pipf_advance_pipf')">
+        <span style="font-weight:600;color:var(--color-text-primary)">⑥ PIPF + Advance PIPF</span><br>
+        <span>Interest before Principal</span>
       </button>
       <button class="strat-btn" data-id="early" onclick="selectStrategy('early')">
-        <span style="font-weight:600;color:var(--color-text-primary)">⑦ Early Payment</span><br>
+        <span style="font-weight:600;color:var(--color-text-primary)">⑦ Early Repayment</span><br>
         <span>Recalc interest</span>
       </button>
       
@@ -338,17 +398,17 @@
       </div>
 
       <!-- Burmese Summary Box -->
-      <div id="burmese-explanation-box" style="padding:16px;border:1px solid #10b981;border-radius:var(--border-radius-lg);background:#ecfdf5;box-shadow: 0 1px 3px rgba(0,0,0,0.02)">
+      <div id="burmese-explanation-box" class="burmese-box">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <span style="font-size:18px">💡</span>
-          <span style="font-size:13px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:.03em">မြန်မာဘာသာ ရှင်းလင်းချက် (Burmese Summary)</span>
+          <span class="burmese-box-title">မြန်မာဘာသာ ရှင်းလင်းချက် (Burmese Summary)</span>
         </div>
-        <div style="font-size:13px;line-height:1.6;color:#065f46">
+        <div class="burmese-box-content">
           <div style="margin-bottom:8px">
-            <strong>အနှစ်ချုပ် -</strong> <span id="burmese-summary" style="color:#0f5132;"></span>
+            <strong>အနှစ်ချုပ် -</strong> <span id="burmese-summary" class="burmese-box-summary"></span>
           </div>
           <div style="margin-bottom:4px;">
-            <strong>လက်တွေ့ဥပမာ -</strong> <span id="burmese-example" style="font-style:italic;color:#157347;"></span>
+            <strong>လက်တွေ့ဥပမာ -</strong> <span id="burmese-example" class="burmese-box-example"></span>
           </div>
           
           <!-- Trigger Button for Long Explanation -->
@@ -359,7 +419,7 @@
           <!-- Hidden Long Explanation Panel -->
           <div class="detail-panel" id="burmese-long-detail">
             <div style="font-weight:700;margin-bottom:4px;color:#047857;">📊 သိန်း ၁၀၀ ချေးငွေ (အတိုး ၁၀%၊ လစဉ် ၁၅ သိန်းဆပ်) ဖြင့် နမူနာတွက်ချက်မှု-</div>
-            <div id="burmese-scenario-text" style="margin-bottom:10px;color:#0f5132;"></div>
+            <div id="burmese-scenario-text" style="margin-bottom:10px;"></div>
             
             <table class="mmo-table">
               <thead>
@@ -374,7 +434,7 @@
                 <!-- Dynamically injected rows -->
               </tbody>
             </table>
-            <div id="burmese-scenario-footer" style="margin-top:10px;font-weight:600;color:#115e59;"></div>
+            <div id="burmese-scenario-footer" style="margin-top:10px;font-weight:600;"></div>
           </div>
 
         </div>
@@ -408,7 +468,7 @@
         note:'',
         javaClass:'DuePenChrgBeforeInterestAndPrincipal',
         accentColor:'#534AB7',
-        burmese_summary: 'Consolidation of Penalties, Fees, Interest, and Principal. ဒဏ်ကြေး၊ ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်ဆုံး ပြတ်အောင်ခုနှိမ်ပြီးမှ ကျန်ရှိသောငွေကို အရင်းထဲမှ နောက်ဆုံးမှ နှုတ်ယူသည့် ပုံမှန်စနစ်ဖြစ်သည်။',
+        burmese_summary: 'ဒဏ်ကြေး၊ ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်ဆုံး ပြတ်အောင်ခုနှိမ်ပြီးမှ ကျန်ရှိသောငွေကို အရင်းထဲမှ နောက်ဆုံးမှ နှုတ်ယူသည့် ပုံမှန်စနစ်ဖြစ်သည်။',
         burmese_example: 'ဒဏ်ကြေး/ဝန်ဆောင်ခနှင့် အတိုးများကို အရင်အပြည့်ဖြတ်ပြီးမှ၊ ကျန်ငွေကိုသာ အရင်းထဲမှ နှုတ်ပေးပါသဖြင့် အရင်းလျော့နှုန်း နှေးပါသည်။',
         long_scenario_intro: 'လူကြီးမင်းက အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း ပေးရန်ရှိချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက ပုံမှန်အတိုင်း အတိုးကို အရင်အပြတ်နှုတ်ပါမည်။',
         long_table:[
@@ -478,45 +538,47 @@
         ],
         long_footer: '📌 ရလဒ်- သွင်းငွေသည် လက်ရှိလအတွက် တိုက်ရိုက်မရောက်ဘဲ နောက်ကျနေသော ကြွေးကျန်သမိုင်းကြောင်းဟောင်းများကို အရင်လိုက်ရှင်းပစ်ခြင်း ဖြစ်သည်။'
       },
-      pipf:{
-        name:'Principal, Interest, Penalties, Fees',
-        code:'principal-interest-penalties-fees',
-        type:'Sequential',
-        desc:'Principal-first strategy. Reduces the outstanding loan balance before clearing interest or charges. Minimizes total interest paid over the loan lifecycle. Borrower-friendly.',
-        use:'Borrower-friendly products, savings-linked loans, Shariah-compliant concepts',
-        order:['principal','interest','penalties','fees'],
+      due_pfip_advance_ppfi:{
+        name:'Due Penalty, Fee, Interest, Principal, In Advance Principal, Penalty, Fee, Interest',
+        code:'due-penalty-fee-interest-principal-in-advance-principal-penalty-fee-interest-strategy',
+        type:'Sequential with Advance Principal',
+        desc:'Clears all due charges first in PFIP order. If there is excess/advance payment, it is allocated directly to the outstanding principal first (minimizing subsequent interest), before covering advance charges.',
+        use:'Borrower-friendly MFIs looking to reward pre-payments by instantly lowering the outstanding interest-bearing principal.',
+        order:['penalties','fees','interest','principal (due)','→ in advance principal first!'],
         allocType:'sequential',
-        note:'By reducing principal first, subsequent interest accrual is lower — benefiting the borrower in long-term loans.',
-        javaClass:'PrincipalInterestPenaltiesChargesPaymentStrategy',
+        note:'Pre-payments immediately reduce the interest-bearing principal, making it an excellent declining-balance strategy.',
+        javaClass:'DuePenaltyFeeInterestPrincipalInAdvancePrincipalPenaltyFeeInterestStrategy',
         accentColor:'#185FA5',
-        burmese_summary: 'သွင်းလိုက်သောငွေကို အရင်းငွေမှ အရင်ဆုံးနှုတ်ပေးသည့်စနစ်ဖြစ်ပြီး၊ အရင်းအမြန်ကျသဖြင့် နောက်ပိုင်းပေးရမည့် အတိုးနှုန်းကို သိသိသာသာ အသက်သာဆုံးဖြစ်စေသော ချေးယူသူအကြိုက်စနစ်ဖြစ်သည်။',
-        burmese_example: 'အတိုး သို့မဟုတ် ဒဏ်ကြေးတွေကို မနှုတ်သေးဘဲ မိမိချေးထားတဲ့ အရင်းမကြီးကို အရင်ဆုံး အကျနှုတ်ပေးသဖြင့် နောက်လများတွင် အတိုး သိသိသာသာသက်သာသွားသည်။',
-        long_scenario_intro: 'အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း ရှိနေချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက၊ အတိုးကို လုံးဝမနှုတ်သေးဘဲ အရင်းထဲကို အရင်ဦးဆုံး ခုနှိမ်ပါမည်။',
+        burmese_summary: 'ပေးရန်ကျန်သမျှ (ဒဏ်ကြေး၊ ဝန်ဆောင်ခ၊ အတိုး၊ အရင်း) ကို အရင်ဆုံး အစဉ်လိုက်ခုနှိမ်ပြီး၊ ပိုလျှံသော ကြိုတင်ပေးသွင်းငွေရှိပါက "အရင်းမကြီး" ထဲသို့ တိုက်ရိုက် ကြိုတင်နှုတ်ပေးသော စမတ်စနစ်ဖြစ်သည်။',
+        burmese_example: 'ပုံမှန်ဆပ်ရမည့်လထက် ပိုဆပ်လိုက်လျှင် ပိုသွင်းသောငွေကို အတိုးကြိုယူခြင်းမပြုဘဲ "အရင်းမကြီး" ထဲသို့ တိုက်ရိုက်သွားနှုတ်ပေးသဖြင့် နောက်လအတိုး အလွန်သက်သာစေသည်။ (အတိုးလျော့ အရင်းလျော့)',
+        long_scenario_intro: 'သတ်မှတ်လစဉ်ကြေးအရ အတိုး ၁၀ သိန်းနှင့် အရင်း ၂ သိန်း ပေးရန်ရှိပြီး၊ လူကြီးမင်းက အရင်းမကြီးကိုပါ လျှော့ချရန် ၁၅ သိန်း (ပို၍) ဆပ်လိုက်ပါက-',
         long_table:[
-          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၁၅ သိန်း (အပြည့်အရင်နှုတ်)', rem:'၈၅ သိန်း'},
-          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၀ ကျပ် (မနှုတ်သေး)', rem:'၁၀ သိန်း'}
+          {name:'အတိုး (Due Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အပြည့်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Due Principal)', due:'၂ သိန်း', pay:'၂ သိန်း (အပြည့်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'ကြိုတင်ပေးသွင်းငွေ (Advance Principal)', due:'သိန်း ၁၀၀', pay:'၃ သိန်း (ပိုငွေကို အရင်းထဲ တိုက်ရိုက်နှုတ်)', rem:'၉၅ သိန်း'}
         ],
-        long_footer: '📌 ရလဒ်- အရင်းက ၈၅ သိန်းပဲ ကျန်တော့တဲ့အတွက်၊ နောက်လကျရင် ကျန်ရှိတဲ့ ၈၅ သိန်းအပေါ်၌သာ အတိုး ၁၀% ထပ်တွက်တော့မှာမလို့ အတိုးနှုန်း အများကြီး လျော့ကျသွားပါမည်။'
+        long_footer: '📌 ရလဒ်- ပုံမှန်ထက် ပိုပေးလိုက်သော ၃ သိန်းသည် အရင်းထဲသို့ တိုက်ရိုက်ခုနှိမ်ပေးသွားသဖြင့် နောက်လများတွင် ကျန်ရှိသော အရင်း ၉၅ သိန်းပေါ်တွင်သာ အတိုးဆက်တွက်တော့မည် ဖြစ်သည်။'
       },
-      ippf:{
-        name:'Interest, Principal, Penalties, Fees',
-        code:'interest-principal-penalties-fees',
-        type:'Sequential',
-        desc:'Interest is cleared before principal reduction. Fees and penalties come last. Simpler than Creocore but same revenue-first intent. Ensures interest income is captured before any principal paydown.',
-        use:'Commercial lenders wanting interest income priority in a simple sequential form',
-        order:['interest','principal','penalties','fees'],
+      due_pipf_advance_pipf:{
+        name:'Due Penalty, Interest, Principal, Fee, In Advance Penalty, Interest, Principal, Fee',
+        code:'due-penalty-interest-principal-fee-in-advance-penalty-interest-principal-fee-strategy',
+        type:'Sequential with Advance Interest Priority',
+        desc:'Due amounts are paid in Penalty -> Interest -> Principal -> Fee order. If there is an advance payment, it is applied in the same sequence, meaning advance interest is covered before advance principal.',
+        use:'Commercial lenders prioritizing interest earnings and interest cash-inflow from prepaid installments over principal paydown.',
+        order:['due penalties','due interest','due principal','due fees','→ advance interest before advance principal'],
         allocType:'sequential',
-        note:'',
-        javaClass:'InterestPrincipalPenaltiesChargesPaymentStrategy',
+        note:'Prepayments are parked to clear upcoming interest payments first before reducing the principal balance.',
+        javaClass:'DuePenaltyInterestPrincipalFeeInAdvancePenaltyInterestPrincipalFeeStrategy',
         accentColor:'#3B6D11',
-        burmese_summary: 'အတိုးကို အရင်ဆုံး ခုနှိမ်ပြီးမှ အရင်းကိုနှုတ်သည်။ ဒဏ်ကြေးနှင့် ဝန်ဆောင်ခများကို နောက်ဆုံးမှ ဖြတ်တောက်သည့်စနစ်ဖြစ်သည်။',
-        burmese_example: 'သွင်းငွေကို အတိုးအရင်ဖြတ်, ကျန်လျှင် အရင်းကိုနှုတ်ပြီး ဒဏ်ကြေးများကို နောက်ဆုံးမှသာ ရှင်းရသည့်ပုံစံမျိုးဖြစ်သည်။',
-        long_scenario_intro: 'အရင်း သိန်း ၁၀၀ နှင့် အတိုး ၁၀ သိန်း တက်နေချိန်တွင် ၁၅ သိန်း လာဆပ်ပါက ဒဏ်ကြေးများကို လုံးဝမဖြတ်သေးဘဲ အတိုးကို အပြတ်အရင် နှုတ်ယူပါမည်။',
+        burmese_summary: 'ဒဏ်ကြေးနှင့် အတိုးကို အရင်းထက်ဦးစားပေး ဖြတ်တောက်ပြီး၊ ပိုလျှံသော ကြိုတင်ပေးသွင်းငွေရှိပါကလည်း "အရင်း" ထဲတိုက်ရိုက်မထည့်ဘဲ နောင်လာမည့်လများ၏ "အတိုး" ကို ကြိုတင်ခုနှိမ်နုတ်ယူသည့် လုပ်ငန်းအကြိုက်စနစ်ဖြစ်သည်။',
+        burmese_example: 'ပုံမှန်ဆပ်ရမည့်လထက် ပိုပေးလိုက်သော်လည်း ပိုပေးလိုက်သောငွေကို အရင်းထဲမရောက်သေးဘဲ နောင်လာမည့်လများ၏ "အတိုး" ကို ကြိုတင်အတိုးဖြတ်သိမ်းထားလိုက်ခြင်း ဖြစ်သည်။',
+        long_scenario_intro: 'အတိုး ၁၀ သိန်းနှင့် အရင်း ၂ သိန်း ပေးရန်ရှိပြီး၊ လူကြီးမင်းက ၁၅ သိန်း ဆပ်လိုက်ပါက ပိုငွေ ၃ သိန်းကို အရင်းထဲမထည့်ဘဲ နောင်လအတိုးအဖြစ် ကြိုတင်ဖြတ်ယူပါမည်။',
         long_table:[
-          {name:'အတိုး (Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အရင်ဖြတ်)', rem:'၀ ကျပ်'},
-          {name:'အရင်း (Principal)', due:'သိန်း ၁၀၀', pay:'၅ သိန်း (ကျန်မှဖြတ်)', rem:'၉၅ သိန်း'}
+          {name:'အတိုး (Due Interest)', due:'၁၀ သိန်း', pay:'၁၀ သိန်း (အပြည့်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'အရင်း (Due Principal)', due:'၂ သိန်း', pay:'၂ သိန်း (အပြည့်ဖြတ်)', rem:'၀ ကျပ်'},
+          {name:'နောင်လအတိုး (Advance Interest)', due:'၁၀ သိန်း (နောင်လ)', pay:'၃ သိန်း (ပိုငွေကို အတိုးကြိုဖြတ်)', rem:'၇ သိန်း'}
         ],
-        long_footer: '📌 ရလဒ်- ဒဏ်ကြေး သို့မဟုတ် ဝန်ဆောင်ခ ကျန်ရှိနေသေးပါက အရင်းအမြတ်များ ရှင်းလင်းပြီးမှ နောက်ဆုံးအဆင့်ကျမှသာ လိုက်လံခုနှိမ်နှုတ်ယူပါမည်။'
+        long_footer: '📌 ရလဒ်- ပိုပေးလိုက်သော ၃ သိန်းသည် အရင်းထဲသို့မရောက်ဘဲ နောင်လာမည့်လအတွက် အတိုးကို ကြိုတင်ခုနှိမ်ထားလိုက်ခြင်း ဖြစ်သည်။ (လုပ်ငန်းရှင်များ အကြိုက်စနစ်ဖြစ်သည်)။'
       },
       early:{
         name:'Early Repayment Strategy',
@@ -561,8 +623,8 @@
           pfip:['penalties','fees','interest','principal'],
           creocore:['interest','principal','fees','penalties'],
           overdue:['penalties','fees','interest','principal'],
-          pipf:['principal','interest','penalties','fees'],
-          ippf:['interest','principal','penalties','fees'],
+          due_pfip_advance_ppfi:['penalties','fees','interest','principal'],
+          due_pipf_advance_pipf:['penalties','interest','principal','fees'],
           early:['penalties','fees','interest','principal']
         };
         const ord = orders[stratId] || ['penalties','fees','interest','principal'];
